@@ -1,0 +1,20 @@
+НАСТРОЙКА ОКРУЖЕНИЯ
+
+!!  Webpack (его разверстка) (import/exports)
+        Реализовать Babel
+        Используем препроцессор Scss
+        Eslint (для чистоты кода)
+        2 Modes (режимы отладки)
+            - Dev
+                Dev Server (лайф режим обновления), SourceMaps (карты для Scss), 
+                Eslint, Not Minified JS & CSS
+            - Prod
+                Minified Code
+
+!!  Git (контроль версий)
+        GitFlow
+            
+            Production
+            Development
+------------------------------------------------------------------------------------------
+
