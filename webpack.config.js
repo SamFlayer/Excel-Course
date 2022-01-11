@@ -1,56 +1,70 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // генерация html файла
-const CopyPlugin = require("copy-webpack-plugin"); // копирование чего-либо (в нашем случае - картинок)
-const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // создание css файла для каждого файла js
-const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // очистка папки dist от старых файлов сборки
+const CopyPlugin = require('copy-webpack-plugin'); // копирование чего-либо (в нашем случае - картинок)
+const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // создание css файла для каждого файла js
+const {CleanWebpackPlugin} = require('clean-webpack-plugin'); // очистка папки dist от старых файлов сборки
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isProd = argv.mode === 'production'
 
-  const filename = ext => isProd ? `[name].[contenthash].bundle.${ext}` : `[name].bundle.${ext}`
+  const filename = (ext) => isProd ? `[name].[contenthash].bundle.${ext}` : `[name].bundle.${ext}`
+
+  const plugins = () => {
+    const base = [
+      new HtmlWebpackPlugin({
+        template: './index.html',
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: path.resolve(__dirname, 'src', './favicon/'),
+            to: path.resolve(__dirname, 'dist/assets'),
+          }, // кладем все из папки favicon в dist/assets
+        ],
+      }),
+      new MiniCssExtractPlugin({
+        filename: filename('css'),
+      }),
+      new CleanWebpackPlugin(),
+    ]
+
+    if (!isProd) {
+      base.push(new ESLintPlugin())
+    }
+
+    return base
+  }
 
   return {
     target: 'web',
     context: path.resolve(__dirname, 'src'), // контекст вебпака - все действия происходят в папке /src
     entry: {
-      main: [ 
+      main: [
         'core-js/stable',
-        'regenerator-runtime/runtime',  // точка входа
-        './index.js'
-      ], 
+        'regenerator-runtime/runtime', // точка входа
+        './index.js',
+      ],
     },
     output: {
       path: path.resolve(__dirname, 'dist'), // папка, в которую будет попадать сгенерированный проект
-      filename: filename('js')
+      filename: filename('js'),
     },
     resolve: {
       extensions: ['.js'], // позволяет писать короткий путь (/path/jsFile вместо /path/jsFile.js)
-      alias: { 
-        '@': path.resolve(__dirname, 'src'),                // '../../path/file' -> '@/path/file' - перенаправляем на нужную папку
-        '@core': path.resolve(__dirname, 'src', 'core')     // удобно для обращения к папке без всяких точек :)
-      }
+      alias: {
+        '@': path.resolve(__dirname, 'src'), // '../../path/file' -> '@/path/file' - перенаправляем на нужную папку
+        '@core': path.resolve(__dirname, 'src', 'core'), // удобно для обращения к папке без всяких точек :)
+      },
     },
     devServer: {
       port: '3000',
       open: true,
-      hot: true
+      hot: true,
       // watchContentBase: true,
     },
     devtool: isProd ? false : 'source-map',
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: './index.html'
-      }),
-      new CopyPlugin({
-        patterns: [
-          { from: path.resolve(__dirname, 'src', './favicon/'), to: path.resolve(__dirname, 'dist/assets') }, // кладем все из папки favicon в dist/assets
-        ],
-      }),
-      new MiniCssExtractPlugin({
-        filename: filename('css')
-      }),
-      new CleanWebpackPlugin()
-    ],
+    plugins: plugins(),
     module: {
       rules: [
         {
@@ -59,20 +73,20 @@ module.exports = (env, argv) => {
             // Загрузчик файлов css
             MiniCssExtractPlugin.loader,
             // Translates CSS into CommonJS
-            "css-loader",
+            'css-loader',
             // Compiles Sass to CSS
-            "sass-loader",
+            'sass-loader',
           ],
         },
         {
           test: /\.m?js$/,
           exclude: /node_modules/,
           use: {
-            loader: "babel-loader",
+            loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env']
-            }
-          }
+              presets: ['@babel/preset-env'],
+            },
+          },
         },
       ],
     },
