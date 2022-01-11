@@ -13,15 +13,27 @@
   },
   "keywords": [],
   "author": "",
+  "browserslist": "> 0.25%, not dead",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/SamFlayer/Excel-Course/issues"
   },
   "homepage": "https://github.com/SamFlayer/Excel-Course#readme",
   "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
+    "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^10.2.0",
+    "css-loader": "^6.5.1",
     "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.4.6",
+    "sass": "^1.47.0",
+    "sass-loader": "^12.4.0",
     "webpack": "^5.65.0",
     "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "core-js": "^3.9.0",
+    "regenerator-runtime": "^0.13.9"
   }
 }

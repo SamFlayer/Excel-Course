@@ -1,11 +1,16 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin'); // генерация html файла
 const CopyPlugin = require("copy-webpack-plugin"); // копирование чего-либо (в нашем случае - картинок)
+const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // создание css файла для каждого файла js
 
 module.exports = {
   context: path.resolve(__dirname, 'src'), // контекст вебпака - все действия происходят в папке /src
   entry: {
-    main: './index.js' // точка входа
+    main: [ 
+      'core-js/stable',
+      'regenerator-runtime/runtime',  // точка входа
+      './index.js'
+    ], 
   },
   output: {
     path: path.resolve(__dirname, 'dist'), // папка, в которую будет попадать сгенерированный проект
@@ -27,5 +32,34 @@ module.exports = {
         { from: path.resolve(__dirname, 'src', './favicon/'), to: path.resolve(__dirname, 'dist/assets') }, // кладем все из папки favicon в dist/assets
       ],
     }),
-  ]
+    new MiniCssExtractPlugin({
+      filename: '[name].bundle.css'
+    })
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Загрузчик файлов css
+          MiniCssExtractPlugin.loader,
+          // Translates CSS into CommonJS
+          "css-loader",
+          // Compiles Sass to CSS
+          "sass-loader",
+        ],
+      },
+      {
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      },
+    ],
+  },
+
 }
