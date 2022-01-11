@@ -10,6 +10,7 @@ module.exports = (env, argv) => {
   const filename = ext => isProd ? `[name].[contenthash].bundle.${ext}` : `[name].bundle.${ext}`
 
   return {
+    target: 'web',
     context: path.resolve(__dirname, 'src'), // контекст вебпака - все действия происходят в папке /src
     entry: {
       main: [ 
@@ -29,6 +30,13 @@ module.exports = (env, argv) => {
         '@core': path.resolve(__dirname, 'src', 'core')     // удобно для обращения к папке без всяких точек :)
       }
     },
+    devServer: {
+      port: '3000',
+      open: true,
+      hot: true
+      // watchContentBase: true,
+    },
+    devtool: isProd ? false : 'source-map',
     plugins: [
       new HtmlWebpackPlugin({
         template: './index.html'
@@ -43,7 +51,6 @@ module.exports = (env, argv) => {
       }),
       new CleanWebpackPlugin()
     ],
-    devtool: isProd ? false : 'source-map',
     module: {
       rules: [
         {
