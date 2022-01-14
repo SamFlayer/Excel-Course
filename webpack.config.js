@@ -59,9 +59,12 @@ module.exports = (env, argv) => {
     },
     devServer: {
       port: '3000',
-      open: true,
+      open: {
+        app: {
+          name: 'Google Chrome',
+        },
+      },
       hot: true,
-      // watchContentBase: true,
     },
     devtool: isProd ? false : 'source-map',
     plugins: plugins(),
